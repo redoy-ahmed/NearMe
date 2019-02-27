@@ -10,6 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.support.v7.widget.Toolbar
 import android.view.View
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import me.near.com.nearme.R
 
@@ -37,9 +40,6 @@ class LoginActivity : AppCompatActivity() {
 
         // set the view now
         setContentView(R.layout.activity_login)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
         inputEmail = findViewById(R.id.email)
         inputPassword = findViewById(R.id.password)
@@ -77,30 +77,29 @@ class LoginActivity : AppCompatActivity() {
 
             //authenticate user
             auth!!.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this@LoginActivity, object : OnCompleteListener<AuthResult>() {
-                    fun onComplete(task: Task<AuthResult>) {
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        progressBar!!.visibility = View.GONE
-                        if (!task.isSuccessful()) {
-                            // there was an error
-                            if (password.length < 6) {
-                                inputPassword!!.error = getString(R.string.minimum_password)
-                            } else {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    getString(R.string.auth_failed),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
+                .addOnCompleteListener(this@LoginActivity
+                ) { task ->
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    progressBar!!.visibility = View.GONE
+                    if (!task.isSuccessful) {
+                        // there was an error
+                        if (password.length < 6) {
+                            inputPassword!!.error = getString(R.string.minimum_password)
                         } else {
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
+                            Toast.makeText(
+                                this@LoginActivity,
+                                getString(R.string.auth_failed),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
+                    } else {
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
-                })
+                }
         })
     }
 }

@@ -3,25 +3,18 @@ package me.near.com.nearme
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
-import android.widget.Toast
 import android.text.TextUtils
-import android.widget.ProgressBar
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
-import me.near.com.nearme.R
+import kotlinx.android.synthetic.main.activity_signup.*
 
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private var inputEmail: EditText? = null
-    private var inputPassword: EditText? = null
-    private var btnSignIn: Button? = null
-    private var btnSignUp: Button? = null
-    private var btnResetPassword: Button? = null
-    private var progressBar: ProgressBar? = null
     private var auth: FirebaseAuth? = null
+
+    var listOfCountry = arrayOf("Country1", "Country2", "Country3")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,16 +23,12 @@ class SignupActivity : AppCompatActivity() {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance()
 
-        btnSignIn = findViewById(R.id.sign_in_button)
-        btnSignUp = findViewById(R.id.sign_up_button)
-        inputEmail = findViewById(R.id.email)
-        inputPassword = findViewById(R.id.password)
-        progressBar = findViewById(R.id.progressBar)
-        btnResetPassword = findViewById(R.id.btn_reset_password)
+        val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOfCountry)
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        currentCountrySpinner!!.adapter = aa
+        countryOfResidenceSpinner!!.adapter = aa
 
-        btnResetPassword!!.setOnClickListener { startActivity(Intent(this@SignupActivity, ResetPasswordActivity::class.java)) }
-
-        btnSignIn!!.setOnClickListener { finish() }
+        /*btnSignIn!!.setOnClickListener { finish() }
 
         btnSignUp!!.setOnClickListener(View.OnClickListener {
             val email = inputEmail!!.text.toString().trim { it <= ' ' }
@@ -64,7 +53,6 @@ class SignupActivity : AppCompatActivity() {
                 return@OnClickListener
             }
 
-            progressBar!!.visibility = View.VISIBLE
             //create user
             auth!!.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(
@@ -75,7 +63,6 @@ class SignupActivity : AppCompatActivity() {
                         "createUserWithEmail:onComplete:" + task.isSuccessful,
                         Toast.LENGTH_SHORT
                     ).show()
-                    progressBar!!.visibility = View.GONE
                     // If sign in fails, display a message to the user. If sign in succeeds
                     // the auth state listener will be notified and logic to handle the
                     // signed in user can be handled in the listener.
@@ -89,11 +76,14 @@ class SignupActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-        })
+        })*/
     }
 
-    override fun onResume() {
-        super.onResume()
-        progressBar!!.visibility = View.GONE
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
