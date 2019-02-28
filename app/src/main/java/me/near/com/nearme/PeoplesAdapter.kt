@@ -22,7 +22,7 @@ class PeoplesAdapter(private val items: ArrayList<User>, private val context: Co
         holder.userNameTextView.text = items[position].firstName + " " + items[position].lastName
         holder.userCountryTextView.text = "Home Country: " + items[position].currentCountry
         holder.userResidenceCountryTextView.text = "Residence Country: " + items[position].countryOfResidence
-        holder.userResidenceCountryTextView.text = "Job: " + items[position].jobTitle
+        holder.jobTitleTextView.text = "Job: " + items[position].jobTitle
     }
 }
 
