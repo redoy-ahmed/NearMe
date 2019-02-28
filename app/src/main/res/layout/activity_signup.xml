@@ -9,7 +9,7 @@
 
     <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
         <LinearLayout
                 android:layout_width="fill_parent"
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/firstName"
+                        android:id="@+id/firstNameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/first_name"
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/lastName"
+                        android:id="@+id/lastNameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/last_name"
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/email"
+                        android:id="@+id/emailEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/email"
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/password"
+                        android:id="@+id/passwordEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="true"
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/cellPhone"
+                        android:id="@+id/cellPhoneEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/cell_phone"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:id="@+id/jobTitle"
+                        android:id="@+id/jobTitleEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/job_title"
@@ -136,7 +136,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                    android:id="@+id/sign_up_button"
+                    android:id="@+id/signupButton"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -148,16 +148,14 @@
                     android:textStyle="bold"/>
 
             <Button
-                    android:id="@+id/sign_in_button"
-                    style="?android:textAppearanceSmall"
+                    android:id="@+id/signinButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@color/colorAccent"
+                    android:background="@null"
                     android:text="@string/btn_login"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"/>
+                    android:textColor="@color/colorAccent"/>
 
         </LinearLayout>
 

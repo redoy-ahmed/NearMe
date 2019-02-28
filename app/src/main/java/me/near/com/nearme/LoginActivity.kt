@@ -1,36 +1,32 @@
 package me.near.com.nearme
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
+import android.content.Context
 import android.content.Intent
-import android.widget.Toast
+import android.graphics.Color
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.widget.ProgressBar
-import android.widget.Button
-import android.widget.EditText
-import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
+import android.widget.Toast
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
-import me.near.com.nearme.R
-
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
-    private var inputEmail: EditText? = null
-    private var inputPassword: EditText? = null
     private var auth: FirebaseAuth? = null
-    private var progressBar: ProgressBar? = null
-    private var btnSignup: Button? = null
-    private var btnLogin: Button? = null
-    private var btnReset: Button? = null
+    lateinit var pDialog: SweetAlertDialog
+    var user: User? = null
+    private val TAG = LoginActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Get Firebase auth instance
         auth = FirebaseAuth.getInstance()
 
         if (auth!!.currentUser != null) {
@@ -38,30 +34,26 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
 
-        // set the view now
         setContentView(R.layout.activity_login)
 
-        inputEmail = findViewById(R.id.email)
-        inputPassword = findViewById(R.id.password)
-        progressBar = findViewById(R.id.progressBar)
-        btnSignup = findViewById(R.id.btn_signup)
-        btnLogin = findViewById(R.id.btn_login)
-        btnReset = findViewById(R.id.btn_reset_password)
-
-        //Get Firebase auth instance
         auth = FirebaseAuth.getInstance()
 
-        btnSignup!!.setOnClickListener {
+        setOnClickListeners()
+    }
+
+    private fun setOnClickListeners() {
+
+        signupButton!!.setOnClickListener {
             startActivity(Intent(this@LoginActivity, SignupActivity::class.java))
         }
 
-        btnReset!!.setOnClickListener {
+        resetPasswordButton!!.setOnClickListener {
             startActivity(Intent(this@LoginActivity, ResetPasswordActivity::class.java))
         }
 
-        btnLogin!!.setOnClickListener(View.OnClickListener {
-            val email = inputEmail!!.text.toString()
-            val password = inputPassword!!.text.toString()
+        loginButton!!.setOnClickListener(View.OnClickListener {
+            val email = emailEditText!!.text.toString()
+            val password = passwordEditText!!.text.toString()
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(applicationContext, "Enter email address!", Toast.LENGTH_SHORT).show()
@@ -73,20 +65,20 @@ class LoginActivity : AppCompatActivity() {
                 return@OnClickListener
             }
 
-            progressBar!!.visibility = View.VISIBLE
+            pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+            pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
+            pDialog.titleText = "Loading"
+            pDialog.setCancelable(false)
+            pDialog.show()
 
-            //authenticate user
             auth!!.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this@LoginActivity
+                .addOnCompleteListener(
+                    this@LoginActivity
                 ) { task ->
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    progressBar!!.visibility = View.GONE
+                    pDialog.cancel()
                     if (!task.isSuccessful) {
-                        // there was an error
                         if (password.length < 6) {
-                            inputPassword!!.error = getString(R.string.minimum_password)
+                            passwordEditText!!.error = getString(R.string.minimum_password)
                         } else {
                             Toast.makeText(
                                 this@LoginActivity,
@@ -95,11 +87,49 @@ class LoginActivity : AppCompatActivity() {
                             ).show()
                         }
                     } else {
+                        saveDataIntoPreference(email)
+                    }
+                }
+        })
+    }
+
+    private fun saveDataIntoPreference(email: String) {
+
+        pDialog.show()
+
+        val sharedPreference = getSharedPreferences("NEAR_ME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+
+        val database = FirebaseDatabase.getInstance().reference
+        val ref = database.child("users")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    user = singleSnapshot.getValue(User::class.java)
+                    if (user!!.email == email) {
+
+                        editor.putString("cfirstName", user!!.firstName)
+                        editor.putString("clastName", user!!.lastName)
+                        editor.putString("cemail", user!!.email)
+                        editor.putString("cpassword", user!!.password)
+                        editor.putString("ccellPhone", user!!.cellPhone)
+                        editor.putString("ccurrentCountry", user!!.currentCountry)
+                        editor.putString("ccountryOfResidence", user!!.countryOfResidence)
+                        editor.putString("cjobTitle", user!!.jobTitle)
+                        editor.commit()
+
+                        pDialog.cancel()
+
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
                 }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException())
+            }
         })
     }
 }

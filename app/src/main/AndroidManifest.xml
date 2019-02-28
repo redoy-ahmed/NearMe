@@ -18,7 +18,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning"
-            tools:targetApi="donut">
+            tools:targetApi="donut" tools:replace="android:icon">
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -31,6 +31,8 @@
         <activity android:name=".ResetPasswordActivity">
         </activity>
         <activity android:name=".SignupActivity">
+        </activity>
+        <activity android:name=".ProfileActivity">
         </activity>
     </application>
 

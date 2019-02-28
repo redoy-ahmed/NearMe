@@ -1,12 +1,20 @@
 package me.near.com.nearme
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -14,70 +22,70 @@ class MainActivity : AppCompatActivity() {
 
     private var authListener: FirebaseAuth.AuthStateListener? = null
     private var auth: FirebaseAuth? = null
+    private val TAG = MainActivity::class.java.simpleName
+    var pDialog: SweetAlertDialog? = null
 
-    private val peoples: ArrayList<String> = ArrayList()
+    private val peoples: ArrayList<User> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initializeView()
+        initializeData()
+    }
 
-        //get firebase auth instance
+    private fun initializeView() {
+
+    }
+
+    private fun initializeData() {
+
         auth = FirebaseAuth.getInstance()
 
-        //get current user
         val user = FirebaseAuth.getInstance().currentUser
 
         authListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user == null) {
-                // user auth state is changed - user is null
-                // launch login activity
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                 finish()
             }
         }
 
-        addPeoples()
+        showPeoples()
         peoplesListRecyclerView.layoutManager = LinearLayoutManager(this)
         peoplesListRecyclerView.adapter = PeoplesAdapter(peoples, this)
     }
 
-    private fun addPeoples() {
-        peoples.add("dog")
-        peoples.add("cat")
-        peoples.add("owl")
-        peoples.add("cheetah")
-        peoples.add("raccoon")
-        peoples.add("bird")
-        peoples.add("snake")
-        peoples.add("lizard")
-        peoples.add("hamster")
-        peoples.add("bear")
-        peoples.add("lion")
-        peoples.add("tiger")
-        peoples.add("horse")
-        peoples.add("frog")
-        peoples.add("fish")
-        peoples.add("shark")
-        peoples.add("turtle")
-        peoples.add("elephant")
-        peoples.add("cow")
-        peoples.add("beaver")
-        peoples.add("bison")
-        peoples.add("porcupine")
-        peoples.add("rat")
-        peoples.add("mouse")
-        peoples.add("goose")
-        peoples.add("deer")
-        peoples.add("fox")
-        peoples.add("moose")
-        peoples.add("buffalo")
-        peoples.add("monkey")
-        peoples.add("penguin")
-        peoples.add("parrot")
+    private fun showPeoples() {
+
+        val sharedPref = getSharedPreferences("NEAR_ME", Context.MODE_PRIVATE)
+
+        pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog!!.progressHelper.barColor = Color.parseColor("#A5DC86")
+        pDialog!!.titleText = "Loading"
+        pDialog!!.setCancelable(false)
+        pDialog!!.show()
+
+        val database = FirebaseDatabase.getInstance().reference
+        val ref = database.child("users")
+
+        val countryQuery = ref.orderByChild("currentCountry").equalTo(sharedPref.getString("ccurrentCountry", ""))
+        countryQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    peoples.add(singleSnapshot.getValue(User::class.java)!!)
+                }
+                peoplesListRecyclerView.adapter!!.notifyDataSetChanged()
+                pDialog!!.cancel()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException())
+            }
+        })
     }
 
-    //sign out method
     private fun signOut() {
         auth!!.signOut()
         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
@@ -105,14 +113,36 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home_action_profile -> {
-
+                val intent = Intent(this@MainActivity, ProfileActivity::class.java)
+                intent.putExtra("from", "current")
+                startActivity(intent)
                 return true
             }
             R.id.home_action_sign_out -> {
-                signOut()
+                SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Are you sure to Sign out?")
+                    .setConfirmText("Yes")
+                    .setCancelText("No")
+                    .setConfirmClickListener { sDialog ->
+                        sDialog.dismissWithAnimation()
+                        signOut()
+                    }
+                    .show()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Are you sure to exit?")
+            .setConfirmText("Yes")
+            .setCancelText("No")
+            .setConfirmClickListener { sDialog ->
+                sDialog.dismissWithAnimation()
+                System.exit(0)
+            }
+            .show()
     }
 }

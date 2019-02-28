@@ -1,38 +1,31 @@
 package me.near.com.nearme
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import com.google.firebase.auth.FirebaseAuth
+import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.EditText
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_reset_password.*
 
 class ResetPasswordActivity : AppCompatActivity() {
 
-    private var inputEmail: EditText? = null
-    private var btnReset: Button? = null
-    private var btnBack: Button? = null
     private var auth: FirebaseAuth? = null
-    private var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
 
-        inputEmail = findViewById(R.id.email)
-        btnReset = findViewById(R.id.btn_reset_password)
-        btnBack = findViewById(R.id.btn_back)
-        progressBar = findViewById(R.id.progressBar)
-
         auth = FirebaseAuth.getInstance()
 
-        btnBack!!.setOnClickListener { finish() }
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
+        }
 
-        btnReset!!.setOnClickListener(View.OnClickListener {
-            val email = inputEmail!!.text.toString().trim { it <= ' ' }
+        resetPasswordButton!!.setOnClickListener(View.OnClickListener {
+            val email = resetPasswordButton!!.text.toString().trim { it <= ' ' }
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(application, "Enter your registered email id", Toast.LENGTH_SHORT).show()
@@ -61,5 +54,11 @@ class ResetPasswordActivity : AppCompatActivity() {
         })
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
 

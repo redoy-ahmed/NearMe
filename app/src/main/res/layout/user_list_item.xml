@@ -1,14 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+    <ImageView
+            android:id="@+id/userImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_user"/>
 
     <TextView
-            android:id="@+id/tv_animal_type"
-            android:layout_width="match_parent"
+            android:id="@+id/userNameTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="20sp"
-            android:padding="20dp"/>
+            android:text="John Doe"
+            app:layout_constraintStart_toEndOf="@id/userImageView"/>
 
-</LinearLayout>
+    <TextView
+            android:id="@+id/userCountryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userNameTextView"
+            tools:text="Home: Barkina Faso"/>
+
+    <TextView
+            android:id="@+id/userResidenceCountryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userCountryTextView"
+            tools:text="Living in: Canada"/>
+
+    <TextView
+            android:id="@+id/jobTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userResidenceCountryTextView"
+            tools:text="Mechanic"/>
+
+</android.support.constraint.ConstraintLayout>
