@@ -5,7 +5,7 @@
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:fillViewport="true"
         android:fitsSystemWindows="true"
-        tools:context="me.near.com.nearme.LoginActivity">
+        tools:context="me.near.com.nearme.SignupActivity">
 
     <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -19,13 +19,17 @@
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
-
-            <ImageView
+            <TextView
                     android:layout_width="@dimen/logo_w_h"
                     android:layout_height="@dimen/logo_w_h"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="30dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="40sp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:text="@string/app_name"
+                    android:layout_marginBottom="30dp"/>
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -111,13 +115,17 @@
 
             <Spinner
                     android:id="@+id/currentCountrySpinner"
+                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="50dp"
+                    android:spinnerMode="dialog"/>
 
             <Spinner
                     android:id="@+id/countryOfResidenceSpinner"
+                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="50dp"
+                    android:spinnerMode="dialog"/>
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"

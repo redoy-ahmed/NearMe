@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
@@ -17,13 +19,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity() {
 
     private var authListener: FirebaseAuth.AuthStateListener? = null
     private var auth: FirebaseAuth? = null
     private val TAG = MainActivity::class.java.simpleName
     var pDialog: SweetAlertDialog? = null
+    var itemDecorator:DividerItemDecoration? = null
 
     private val peoples: ArrayList<User> = ArrayList()
 
@@ -35,15 +37,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeView() {
-
+        itemDecorator = DividerItemDecoration(applicationContext, DividerItemDecoration.VERTICAL)
+        itemDecorator!!.setDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.divider)!!)
+        peoplesListRecyclerView.addItemDecoration(itemDecorator!!)
     }
 
     private fun initializeData() {
 
         auth = FirebaseAuth.getInstance()
-
-        val user = FirebaseAuth.getInstance().currentUser
-
         authListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user == null) {
@@ -54,7 +55,27 @@ class MainActivity : AppCompatActivity() {
 
         showPeoples()
         peoplesListRecyclerView.layoutManager = LinearLayoutManager(this)
-        peoplesListRecyclerView.adapter = PeoplesAdapter(peoples, this)
+        peoplesListRecyclerView.adapter = PeoplesAdapter(peoples) { user: User -> userItemClicked(user) }
+    }
+
+    private fun userItemClicked(user: User) {
+
+        val sharedPreference = getSharedPreferences("NEAR_ME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+
+        editor.putString("pfirstName", user.firstName)
+        editor.putString("plastName", user.lastName)
+        editor.putString("pemail", user.email)
+        editor.putString("ppassword", user.password)
+        editor.putString("pcellPhone", user.cellPhone)
+        editor.putString("pcurrentCountry", user.currentCountry)
+        editor.putString("pcountryOfResidence", user.countryOfResidence)
+        editor.putString("pjobTitle", user.jobTitle)
+        editor.commit()
+
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.putExtra("from", "public")
+        startActivity(intent)
     }
 
     private fun showPeoples() {
@@ -62,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("NEAR_ME", Context.MODE_PRIVATE)
 
         pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-        pDialog!!.progressHelper.barColor = Color.parseColor("#A5DC86")
+        pDialog!!.progressHelper.barColor = Color.parseColor("#00bcd4")
         pDialog!!.titleText = "Loading"
         pDialog!!.setCancelable(false)
         pDialog!!.show()

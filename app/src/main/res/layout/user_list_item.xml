@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:background="@color/colorPrimary">
 
     <ImageView
             android:id="@+id/userImageView"
@@ -22,7 +22,7 @@
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:text="John Doe"
             app:layout_constraintStart_toEndOf="@id/userImageView"/>
@@ -35,7 +35,7 @@
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/userImageView"
             app:layout_constraintTop_toBottomOf="@id/userNameTextView"
@@ -49,7 +49,7 @@
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/userImageView"
             app:layout_constraintTop_toBottomOf="@id/userCountryTextView"
@@ -63,7 +63,7 @@
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/userImageView"
             app:layout_constraintTop_toBottomOf="@id/userResidenceCountryTextView"

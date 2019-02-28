@@ -139,7 +139,7 @@ class SignupActivity : AppCompatActivity() {
             }
 
             pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-            pDialog!!.progressHelper.barColor = Color.parseColor("#A5DC86")
+            pDialog!!.progressHelper.barColor = Color.parseColor("#00bcd4")
             pDialog!!.titleText = "Loading"
             pDialog!!.setCancelable(false)
             pDialog!!.show()

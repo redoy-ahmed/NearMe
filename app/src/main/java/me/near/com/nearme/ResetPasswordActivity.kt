@@ -1,22 +1,30 @@
 package me.near.com.nearme
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_reset_password.*
 
 class ResetPasswordActivity : AppCompatActivity() {
 
     private var auth: FirebaseAuth? = null
+    var pDialog: SweetAlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
 
+        initializeData()
+        setOnClickListeners()
+    }
+
+    private fun initializeData() {
         auth = FirebaseAuth.getInstance()
 
         if (supportActionBar != null) {
@@ -24,6 +32,13 @@ class ResetPasswordActivity : AppCompatActivity() {
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
 
+        pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog!!.progressHelper.barColor = Color.parseColor("#00bcd4")
+        pDialog!!.titleText = "Loading"
+        pDialog!!.setCancelable(false)
+    }
+
+    private fun setOnClickListeners() {
         resetPasswordButton!!.setOnClickListener(View.OnClickListener {
             val email = resetPasswordButton!!.text.toString().trim { it <= ' ' }
 
@@ -32,7 +47,7 @@ class ResetPasswordActivity : AppCompatActivity() {
                 return@OnClickListener
             }
 
-            progressBar!!.visibility = View.VISIBLE
+            pDialog!!.show()
             auth!!.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -48,8 +63,7 @@ class ResetPasswordActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
-                    progressBar!!.visibility = View.GONE
+                    pDialog!!.cancel()
                 }
         })
     }
